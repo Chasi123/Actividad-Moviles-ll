@@ -1,6 +1,7 @@
 import {
   Alert,
   Button,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -44,6 +45,7 @@ export default function RegistroUsuarioScreen() {
   }
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Text style={styles.titulo}>Registro</Text>
 
@@ -65,9 +67,20 @@ export default function RegistroUsuarioScreen() {
       />
       <TextInput
         placeholder="Teléfono"
+
         style={styles.input}
-        onChangeText={(texto) => settelefono(texto)}
-        keyboardType="phone-pad"
+         onChangeText={(texto) => {
+    // Si contiene algo que no sea número, alerta
+    if (/[^0-9]/.test(texto)) {
+      Alert.alert("Error", "Solo se permiten números");
+    }
+
+    // Elimina letras y símbolos, y guarda solo números
+    const soloNumeros = texto.replace(/[^0-9]/g, "");
+    settelefono(soloNumeros);
+  }}
+  value={telefono}
+        keyboardType="name-phone-pad"
       />
       <TextInput
         placeholder="Contraseña"
@@ -102,6 +115,7 @@ export default function RegistroUsuarioScreen() {
         <Button title="Registrar" color="#6a1b9a" onPress={guardar} />
       </View>
     </View>
+    </ScrollView>
   );
 }
 

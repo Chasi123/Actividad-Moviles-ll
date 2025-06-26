@@ -1,4 +1,13 @@
-import { Alert, Button, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Button,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 
 export default function FormularioDireccionScreen() {
@@ -6,83 +15,101 @@ export default function FormularioDireccionScreen() {
   const [numeroEx, setnumeroEx] = useState("");
   const [ciudad, setciudad] = useState("");
   const [referencia, setreferencia] = useState("");
-  const [contraseña, setcontraseña] = useState("");
-  const [concontraseña, setconcontraseña] = useState("");
+  
+  const [esFiscal, setesFiscal] = useState(false); 
 
-  const [visible, setvisible] = useState(false);
   const [datos, setdatos] = useState({
     calle: "",
     numeroEx: "",
     ciudad: "",
     referencia: "",
-    
+    esFiscal: false,
   });
 
   function guardar() {
-    if (contraseña !== concontraseña) {
-      Alert.alert("Error", "Las contraseñas no coinciden");
+    if (!calle.trim() || !numeroEx.trim() || !ciudad.trim()) {
+      Alert.alert("Campos obligatorios", "Calle, Número Exterior y Ciudad son obligatorios.");
+      return;
+    }
+
+    if (!/^\d+$/.test(numeroEx)) {
+      Alert.alert("Error", "Número Exterior debe contener solo números.");
       return;
     }
 
     setdatos({
-      calle: calle.trim(),
-      numeroEx: numeroEx.trim(),
-      ciudad: ciudad.trim(),
-      referencia: referencia,
-      
+      "calle": calle.trim(),
+      "numeroEx": numeroEx.trim(),
+      "ciudad": ciudad.trim(),
+      "referencia": referencia.trim(),
+      "esFiscal":esFiscal,
     });
 
-    Alert.alert("Registro exitoso", "Usuario registrado correctamente");
+    Alert.alert("Registro exitoso", "Dirección registrada correctamente");
   }
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Text style={styles.titulo}>Formulario Dirección</Text>
 
       <TextInput
         placeholder="Calle"
         style={styles.input}
-        onChangeText={(texto) => setcalle(texto)}
+        onChangeText={setcalle}
+        value={calle}
       />
       <TextInput
         placeholder="Número Exterior"
         style={styles.input}
-        onChangeText={(texto) => setnumeroEx(texto)}
+        keyboardType="numeric"
+        onChangeText={(texto) => {
+          if (/[^0-9]/.test(texto)) {
+            Alert.alert("Solo números", "Número Exterior debe ser solo nuemeros");
+          }
+          setnumeroEx(texto.replace(/[^0-9]/g, ""));
+        }}
+        value={numeroEx}
       />
       <TextInput
         placeholder="Ciudad"
         style={styles.input}
-        onChangeText={(texto) => setciudad(texto)}
-        keyboardType="email-address"
+        onChangeText={setciudad}
+        value={ciudad}
       />
       <TextInput
-        placeholder="Referencias"
+        placeholder="Referencias (opcional)"
         style={styles.input}
-        onChangeText={(texto) => setreferencia(texto)}
-        keyboardType="phone-pad"
-        />
-    
+        onChangeText={setreferencia}
+        value={referencia}
+      />
 
       <View style={styles.linea} />
 
       <View style={styles.view}>
-        <Text style={styles.labelSwitch}>Aceptar condiciones</Text>
-        <Switch value={visible} onValueChange={() => setvisible(!visible)} />
+        <Text style={styles.labelSwitch}>¿Es dirección fiscal?</Text>
+        <Switch value={esFiscal} onValueChange={() => setesFiscal(!esFiscal)} />
       </View>
 
-      {visible && datos && (
-        <View style={styles.datosBox}>
-          <Text style={styles.txt}>Nombre: {datos.nombre}</Text>
-          <Text style={styles.txt}>Apellido: {datos.apellido}</Text>
-          <Text style={styles.txt}>Email: {datos.email}</Text>
-          <Text style={styles.txt}>Teléfono: {datos.telefono}</Text>
-        </View>
+      {esFiscal && datos && (
+      <View style={styles.datosBox}>
+        <Text style={styles.txt}>Calle: {datos.calle}</Text>
+        <Text style={styles.txt}>N° Exterior: {datos.numeroEx}</Text>
+        <Text style={styles.txt}>Ciudad: {datos.ciudad}</Text>
+        {datos.referencia !== "" && (
+          <Text style={styles.txt}>Referencias: {datos.referencia}</Text>
+        )}
+        <Text style={styles.txt}>
+           Dirección fiscal: {datos.esFiscal ? "Sí" : "No"}
+        </Text>
+      </View>
       )}
 
       <View style={styles.buttonContainer}>
         <Button title="Registrar" color="#6a1b9a" onPress={guardar} />
       </View>
     </View>
+    </ScrollView>
   );
 }
 
@@ -108,8 +135,7 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     padding: 12,
     borderRadius: 12,
-    elevation: 3, // sombra en Android
-    shadowColor: "#000", // sombra en iOS
+    elevation: 3,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
   },
