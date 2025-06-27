@@ -135,8 +135,6 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 12,
         elevation: 3, // sombra en Android
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
     },
     linea: {
         borderBottomWidth: 1,

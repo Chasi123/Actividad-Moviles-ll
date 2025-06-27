@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 
 
@@ -17,6 +18,21 @@ import FormularioScreen from "../screens/FormularioScreen";
 import RegistroUsuarioScreen from "../screens/RegistroUsuarioScreen";
 import FormularioDireccionScreen from "../screens/FormularioDireccionScreen";
 import EncuestaSatisfaccionScreen from "../screens/EncuestaSatisfaccionScreen";
+import ListaLocal from "../screens/listas/ListaLocal";
+import ListaLocalExterna from "../screens/listas/ListaLocalExterna";
+import ListaPrueba from "../screens/listas/ListaPrueba";
+
+const Top = createMaterialTopTabNavigator();
+function MyTop (){
+    return(
+        <Top.Navigator>
+            <Top.Screen name="Local" component={ListaLocal}/>
+            <Top.Screen name="Externo" component={ListaLocalExterna}/>
+            <Top.Screen name="Prueba" component={ListaPrueba}/> 
+        </Top.Navigator>
+    )
+}
+
 
 const Stack = createStackNavigator();
 
@@ -43,7 +59,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
     return (
         <Tab.Navigator
-            initialRouteName="Welcom">
+            initialRouteName="Top">
             <Tab.Screen name="Welcom" component={WelcomScreen}
                 options={{ tabBarIcon: () => <MaterialCommunityIcons name="human-greeting-variant" size={24} color="black" /> }} />
 
@@ -63,6 +79,7 @@ function MyTabs() {
                 component={EncuestaSatisfaccionScreen}
                 options={{ tabBarIcon: () => <AntDesign name="checkcircle" size={24} color="black" /> }}
             />
+            <Tab.Screen name="Top" component={MyTop}/>
         </Tab.Navigator>
     );
 }
